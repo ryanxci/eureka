@@ -98,6 +98,9 @@ public class DefaultEurekaServerConfig implements EurekaServerConfig {
     }
 
     private void init() {
+        // 先是将eureka-server.properties中的配置加载到了一个Properties对象中，
+        // 然后将Properties对象中的配置放到ConfigurationManager中去，
+        // 此时ConfigurationManager中去就有了所有的配置了
         String env = ConfigurationManager.getConfigInstance().getString(
                 EUREKA_ENVIRONMENT, TEST);
         ConfigurationManager.getConfigInstance().setProperty(

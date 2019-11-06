@@ -36,6 +36,9 @@ import java.util.Set;
  * @author Karthik Ranganathan
  *
  */
+
+// 提供了一个获取配置的接口，接口里包含大量的方法，
+// 每个方法可以获取一个配置，获取配置的方法的实现方法里对配置的名称进行硬编码
 public interface EurekaServerConfig {
 
     /**
