@@ -59,6 +59,7 @@ class InstanceInfoReplicator implements Runnable {
         logger.info("InstanceInfoReplicator onDemand update allowed rate per min is {}", allowedRatePerMinute);
     }
 
+    // InstanceInfoReplicator的start()方法里面，将自己作为一个线程放到一个调度线程池中去了，默认是延迟40s去执行这个线程，还将isDirty设置为了ture
     public void start(int initialDelayMs) {
         if (started.compareAndSet(false, true)) {
             instanceInfo.setIsDirty();  // for initial register
@@ -102,9 +103,12 @@ class InstanceInfoReplicator implements Runnable {
 
     public void run() {
         try {
+            // 先是找EurekaClient.refreshInstanceInfo()这个方法，里面其实是调用ApplicationInfoManager的一些方法刷新了一下服务实例的配置，
+            // 看看配置有没有改变，如果改变了，就刷新一下；用健康检查器，检查了一下状态，将状态设置到了ApplicationInfoManager中去，更新服务实例的状态
             discoveryClient.refreshInstanceInfo();
 
             Long dirtyTimestamp = instanceInfo.isDirtyWithTime();
+            // 因为之前设置过isDirty，所以这里会执行进行服务注册
             if (dirtyTimestamp != null) {
                 discoveryClient.register();
                 instanceInfo.unsetIsDirty(dirtyTimestamp);

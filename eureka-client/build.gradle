@@ -6,6 +6,10 @@ configurations.all {
     exclude group: 'org.glassfish.jersey'
 }
 
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
 dependencies {
     compile "com.netflix.netflix-commons:netflix-eventbus:0.3.0"
     compile 'com.thoughtworks.xstream:xstream:1.4.9'

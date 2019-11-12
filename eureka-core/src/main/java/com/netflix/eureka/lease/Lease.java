@@ -39,8 +39,11 @@ public class Lease<T> {
     public static final int DEFAULT_DURATION_IN_SECS = 90;
 
     private T holder;
+    // 驱逐时间
     private long evictionTimestamp;
+    // 注册时间
     private long registrationTimestamp;
+    // 系统启动时间
     private long serviceUpTimestamp;
     // Make it volatile so that the expiration task would see this quicker
     private volatile long lastUpdateTimestamp;
