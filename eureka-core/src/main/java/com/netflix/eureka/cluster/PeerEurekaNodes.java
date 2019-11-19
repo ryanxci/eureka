@@ -73,6 +73,7 @@ public class PeerEurekaNodes {
         return serverConfig.getHealthStatusMinNumberOfAvailablePeers();
     }
 
+    // 默认是每隔10分钟，会运行一个任务，就是基于配置文件中的url来刷新eureka server列表。
     public void start() {
         taskExecutor = Executors.newSingleThreadScheduledExecutor(
                 new ThreadFactory() {
