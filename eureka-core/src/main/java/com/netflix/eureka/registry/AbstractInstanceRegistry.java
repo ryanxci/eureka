@@ -192,7 +192,9 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     public void register(InstanceInfo registrant, int leaseDuration, boolean isReplication) {
         try {
             read.lock();
+            // 这里的gMap，key是实例的编号，value是租约信息
             Map<String, Lease<InstanceInfo>> gMap = registry.get(registrant.getAppName());
+            // 注册数+1
             REGISTER.increment(isReplication);
             if (gMap == null) {
                 final ConcurrentHashMap<String, Lease<InstanceInfo>> gNewMap = new ConcurrentHashMap<String, Lease<InstanceInfo>>();
@@ -304,6 +306,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
             CANCEL.increment(isReplication);
             Map<String, Lease<InstanceInfo>> gMap = registry.get(appName);
             Lease<InstanceInfo> leaseToCancel = null;
+            // 删除实例信息
             if (gMap != null) {
                 leaseToCancel = gMap.remove(id);
             }
@@ -1265,6 +1268,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
          * clock skew or gc for example) causes the actual eviction task to execute later than the desired time
          * according to the configured cycle.
          */
+        // 计算补偿时间
         long getCompensationTimeMs() {
             long currNanos = getCurrentTimeNano();
             long lastNanos = lastExecutionNanosRef.getAndSet(currNanos);
@@ -1272,7 +1276,9 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
                 return 0l;
             }
 
+            // 上次执行到现在的时间差
             long elapsedMs = TimeUnit.NANOSECONDS.toMillis(currNanos - lastNanos);
+            // 补偿时间=实际的执行时间差-配置的驱逐任务执行间隔
             long compensationTime = elapsedMs - serverConfig.getEvictionIntervalTimerInMs();
             return compensationTime <= 0l ? 0l : compensationTime;
         }

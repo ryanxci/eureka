@@ -237,7 +237,10 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
     @Override
     public void openForTraffic(ApplicationInfoManager applicationInfoManager, int count) {
         // Renewals happen every 30 seconds and for a minute it should be a factor of 2.
+        // 期望的每分钟心跳数，这里代码有问题，写代码的人假设刷新时间配置的是默认的30秒，也就是假设一分钟一台实例请求两次，
+        // 一旦用户修改了这个配置，就会导致bug
         this.expectedNumberOfRenewsPerMin = count * 2;
+        // 每分钟心跳的阈值
         this.numberOfRenewsPerMinThreshold =
                 (int) (this.expectedNumberOfRenewsPerMin * serverConfig.getRenewalPercentThreshold());
         logger.info("Got " + count + " instances from neighboring DS node");

@@ -112,7 +112,7 @@ public class EurekaBootStrap implements ServletContextListener {
         try {
             // 初始化eureka-server的环境
             initEurekaEnvironment();
-            //
+            // 初始化上下文
             initEurekaServerContext();
 
             ServletContext sc = event.getServletContext();
